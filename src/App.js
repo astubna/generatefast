@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, Star, Download, Copy, Check, X, RefreshCw, Info, History, ExternalLink, Loader, Globe, Zap, Shield } from "lucide-react";
+import { Search, Star, Download, Copy, Check, X, RefreshCw, Info, History, ExternalLink, Loader, Globe, Zap, Shield, Flag } from "lucide-react";
 
 // ========================================================
 // ✅ SECURE VERSION - API calls go through PHP proxy
@@ -26,13 +26,53 @@ const NATIONAL_TLDS = [
 ];
 
 const REGISTRARS = [
-  { name: 'WebSupport.sk', url: 'https://www.websupport.sk/vyhladavanie-domeny/?domain=', flag: '🇸🇰' },
-  { name: 'Wedos.sk',      url: 'https://www.wedos.sk/domeny/',                           flag: '🇸🇰' },
-  { name: 'Wedos.cz',      url: 'https://www.wedos.cz/domeny/',                           flag: '🇨🇿' },
-  { name: 'Forpsi.cz',     url: 'https://www.forpsi.cz/domeny/?domain=',                  flag: '🇨🇿' },
-  { name: 'Namecheap',     url: 'https://www.namecheap.com/domains/registration/results/?domain=', flag: '🌍' },
-  { name: 'GoDaddy',       url: 'https://www.godaddy.com/domainsearch/find?domainToCheck=', flag: '🌍' },
+  { name: 'Namecheap',     url: 'https://namecheap.pxf.io/k406M0', flag: '🌍' },
+  { name: 'Gandi',         url: 'https://www.jdoqocy.com/click-101702617-17236105', flag: '🌍' },
+  { name: 'WebSupport.sk', url: 'https://www.websupport.sk/?ref=NTsqG1g_TA', flag: "🇸🇰" },
+  { name: 'Wedos.cz',      url: 'https://www.wedos.cz/?ap=n47ALJ', flag: '🇨🇿' },
 ];
+
+// ========================================================
+// SMART REGISTRAR SELECTION - Choose best registrar by TLD
+// ========================================================
+
+const getRegistrarForDomain = (domain) => {
+  const tld = domain.split('.').pop().toLowerCase();
+  
+  // Slovakia domains → WebSupport.sk
+  if (tld === 'sk') {
+    return {
+      name: 'WebSupport.sk',
+      url: `https://www.websupport.sk/cart/domain-checker/?qd=${domain}&ref=NTsqG1g_TA`,
+      flag: '🇸🇰'
+    };
+  }
+  
+  // Czech domains → Wedos.cz
+  if (tld === 'cz') {
+    return {
+      name: 'Wedos.cz',
+      url: `https://www.wedos.cz/?ap=n47ALJ`,
+      flag: '🇨🇿'
+    };
+  }
+  
+  // European domains → Gandi
+  if (['eu', 'de', 'at', 'pl', 'hu', 'uk', 'fr', 'it', 'es', 'nl', 'be', 'ch', 'se', 'no', 'dk', 'fi', 'ro', 'pt', 'ie'].includes(tld)) {
+    return {
+      name: 'Gandi',
+      url: `https://www.jdoqocy.com/click-101702617-17236105?url=https://shop.gandi.net/en/domain/suggest?search=${domain}`,
+      flag: '🌍'
+    };
+  }
+  
+  // All other TLDs (including .com, .io, .app, etc.) → Namecheap
+  return {
+    name: 'Namecheap',
+    url: `https://namecheap.pxf.io/k406M0?url=https://www.namecheap.com/domains/registration/results/?domain=${domain}`,
+    flag: '🌍'
+  };
+};
 
 const T = {
   en: {
@@ -66,6 +106,16 @@ const T = {
     styles: ['Modern','Professional','Playful','Minimalist','Creative','Tech-focused'],
     aiError: 'AI generation failed. Please try again.', aiReason: '💡 Why this domain?',
     registrars: 'Registrars',
+        footerAboutDesc: 'AI-powered domain name generator for your business',
+footerQuickLinks: 'Quick Links',
+footerHome: 'Home',
+footerPrivacy: 'Privacy Policy',
+footerTerms: 'Terms of Service',
+footerContact: 'Contact',
+footerEmail: 'Email',
+footerGitHub: 'GitHub',
+footerCopyright: '© 2024 GenerateFast. All rights reserved.',
+footerBuiltWith: 'Built with ❤️ and AI',
   },
   sk: {
     title: 'Generátor doménových mien', subtitle: 'Doménové mená poháňané AI pre váš biznis',
@@ -98,6 +148,16 @@ const T = {
     styles: ['Moderný','Profesionálny','Hravý','Minimalistický','Kreatívny','Technologický'],
     aiError: 'Generovanie AI zlyhalo. Skúste znova.', aiReason: '💡 Prečo táto doména?',
     registrars: 'Registrátori',
+    footerAboutDesc: 'Generátor doménových mien poháňaný AI pre váš biznis',
+footerQuickLinks: 'Rýchle odkazy',
+footerHome: 'Domov',
+footerPrivacy: 'Politika ochrany osobných údajov',
+footerTerms: 'Podmienky služby',
+footerContact: 'Kontakt',
+footerEmail: 'Email',
+footerGitHub: 'GitHub',
+footerCopyright: '© 2024 GenerateFast. Všetky práva vyhradené.',
+footerBuiltWith: 'Postavené s ❤️ a AI',
   },
   cs: {
     title: 'Generátor doménových jmen', subtitle: 'Doménová jména pro váš byznys s pomocí AI',
@@ -130,6 +190,16 @@ const T = {
     styles: ['Moderní','Profesionální','Hravý','Minimalistický','Kreativní','Technologický'],
     aiError: 'Generování AI selhalo. Zkuste znovu.', aiReason: '💡 Proč tato doména?',
     registrars: 'Registrátoři',
+    footerAboutDesc: 'Generátor doménových jmen poháňaný AI pro váš byznys',
+footerQuickLinks: 'Rychlé odkazy',
+footerHome: 'Domů',
+footerPrivacy: 'Zásady ochrany osobních údajů',
+footerTerms: 'Podmínky služby',
+footerContact: 'Kontakt',
+footerEmail: 'Email',
+footerGitHub: 'GitHub',
+footerCopyright: '© 2024 GenerateFast. Všechna práva vyhrazena.',
+footerBuiltWith: 'Vytvořeno s ❤️ a AI',
   },
 };
 
@@ -217,7 +287,29 @@ const checkDomainAvailability = async (domainFull) => {
 };
 
 export default function App() {
-  const [lang, setLang]         = useState('sk');
+  // ========================================================
+  // LANGUAGE DETECTION FROM URL
+  // ========================================================
+  const getInitialLanguage = () => {
+    const path = window.location.pathname;
+    if (path.startsWith('/en')) return 'en';
+    if (path.startsWith('/cs')) return 'cs';
+    if (path.startsWith('/sk')) return 'sk';
+    return 'en'; // Default to English
+  };
+
+  const [lang, setLang] = useState(getInitialLanguage());
+
+  // Handle language change with URL update
+  const handleLanguageChange = (newLang) => {
+    setLang(newLang);
+    const newPath = `/${newLang}`;
+    window.history.pushState({ lang: newLang }, '', newPath);
+  };
+
+  // ========================================================
+  // ALL OTHER STATE VARIABLES
+  // ========================================================
   const [step, setStep]         = useState('form');
   const [loading, setLoading]   = useState(false);
   const [aiError, setAiError]   = useState('');
@@ -230,6 +322,18 @@ export default function App() {
   const [showTips, setShowTips] = useState(true);
   const [copied, setCopied]     = useState(null);
   const [verifyingMap, setVerifyingMap] = useState({});
+  
+  // ========================================================
+  // COOKIE CONSENT STATES
+  // ========================================================
+  const [showCookieBanner, setShowCookieBanner] = useState(() => {
+    return !localStorage.getItem('cookie-consent-given');
+  });
+  const [showCookieModal, setShowCookieModal] = useState(false);
+  const [analyticsEnabled, setAnalyticsEnabled] = useState(() => {
+    const saved = localStorage.getItem('cookie-analytics-enabled');
+    return saved === null ? true : saved === 'true';
+  });
 
   const t = T[lang];
 
@@ -336,8 +440,157 @@ Respond ONLY with a valid JSON array of exactly 15 objects. No explanation.
   const inp  = "w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500 focus:border-transparent transition shadow-sm";
   const setF = (k,v) => setForm(f=>({...f,[k]:v}));
 
+  useEffect(() => {
+  // Update canonical based on language
+  const canonicalUrl = lang === 'en' 
+    ? 'https://generatefast.com/'
+    : `https://generatefast.com/${lang}`;
+  
+  // Update canonical link
+  let canonicalLink = document.querySelector('link[rel="canonical"]');
+  if (!canonicalLink) {
+    canonicalLink = document.createElement('link');
+    canonicalLink.rel = 'canonical';
+    document.head.appendChild(canonicalLink);
+  }
+  canonicalLink.href = canonicalUrl;
+
+  // Update lang attribute
+  document.documentElement.lang = lang;
+}, [lang]);
+
   return (
     <div className="min-h-screen bg-gray-950 text-white">
+
+      {/* ── COOKIE BANNER ── */}
+      {showCookieBanner && (
+        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-gray-900 to-gray-800 border-t border-gray-700 p-4 z-40 shadow-2xl">
+          <div className="max-w-6xl mx-auto flex items-center justify-between gap-4 flex-wrap">
+            <div className="flex-1 min-w-fit">
+              <h3 className="text-white font-bold mb-2">
+                {lang === 'sk' ? '🍪 Používame cookies' : lang === 'cs' ? '🍪 Používáme cookies' : '🍪 We use cookies'}
+              </h3>
+              <p className="text-gray-400 text-sm">
+                {lang === 'sk' 
+                  ? 'Používame cookies na zlepšenie vášho zážitku a analýzu používania našej stránky. Môžete prijať alebo spravovať preferencie.' 
+                  : lang === 'cs'
+                  ? 'Používáme cookies ke zlepšení vašich zkušeností a analýze používání našeho webu. Můžete přijmout nebo spravovat preference.'
+                  : 'We use cookies to improve your experience and analyze how our site is used. You can accept or manage preferences.'}
+                {' '}
+                <a href="/privacy.html" className="text-purple-400 hover:text-purple-300 underline">
+                  {lang === 'sk' ? 'Politika' : lang === 'cs' ? 'Politika' : 'Privacy Policy'}
+                </a>
+              </p>
+            </div>
+            <div className="flex gap-2 flex-wrap whitespace-nowrap">
+              <button
+                onClick={() => {
+                  localStorage.setItem('cookie-consent-given', 'false');
+                  localStorage.setItem('cookie-analytics-enabled', 'false');
+                  setShowCookieBanner(false);
+                }}
+                className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg text-sm font-semibold transition"
+              >
+                {lang === 'sk' ? 'Odmietnuť' : lang === 'cs' ? 'Odmítnout' : 'Reject'}
+              </button>
+              <button
+                onClick={() => {
+                  localStorage.setItem('cookie-consent-given', 'true');
+                  localStorage.setItem('cookie-analytics-enabled', 'true');
+                  setShowCookieBanner(false);
+                }}
+                className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white rounded-lg text-sm font-semibold transition shadow-lg"
+              >
+                {lang === 'sk' ? 'Prijať všetko' : lang === 'cs' ? 'Přijmout vše' : 'Accept all'}
+              </button>
+              <button
+                onClick={() => setShowCookieModal(true)}
+                className="px-4 py-2 bg-transparent text-purple-400 border border-purple-400 hover:bg-purple-600 hover:text-white rounded-lg text-sm font-semibold transition"
+              >
+                {lang === 'sk' ? 'Spravovať' : lang === 'cs' ? 'Spravovat' : 'Manage'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── COOKIE PREFERENCES MODAL ── */}
+      {showCookieModal && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+          <div className="bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-white font-bold text-xl">
+                {lang === 'sk' ? '🍪 Spravovať cookies' : lang === 'cs' ? '🍪 Spravovat cookies' : '🍪 Manage Cookies'}
+              </h2>
+              <button
+                onClick={() => setShowCookieModal(false)}
+                className="text-gray-400 hover:text-white text-2xl transition"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Necessary Cookies */}
+            <div className="mb-6 pb-6 border-b border-gray-700">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-white font-semibold">
+                  {lang === 'sk' ? 'Potrebné cookies' : lang === 'cs' ? 'Nezbytné cookies' : 'Necessary Cookies'}
+                </span>
+                <span className="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded">
+                  {lang === 'sk' ? 'Povinné' : lang === 'cs' ? 'Povinné' : 'Required'}
+                </span>
+              </div>
+              <p className="text-sm text-gray-400">
+                {lang === 'sk' ? 'Potrebné pre správne fungovanie stránky.' : lang === 'cs' ? 'Vyžadováno pro správné fungování webu.' : 'Required for the website to function properly.'}
+              </p>
+            </div>
+
+            {/* Analytics Cookies */}
+            <div className="mb-8 pb-6">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-white font-semibold">
+                  {lang === 'sk' ? 'Analytické cookies' : lang === 'cs' ? 'Analytické cookies' : 'Analytics Cookies'}
+                </span>
+                <button
+                  onClick={() => setAnalyticsEnabled(!analyticsEnabled)}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${analyticsEnabled ? 'bg-purple-600' : 'bg-gray-700'}`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${analyticsEnabled ? 'translate-x-6' : 'translate-x-1'}`}
+                  />
+                </button>
+              </div>
+              <p className="text-sm text-gray-400">
+                {lang === 'sk' ? 'Pomáhajú nám pochopiť ako sa používa naša stránka (Google Analytics).' : lang === 'cs' ? 'Pomáhejte nám pochopit, jak se náš web používá (Google Analytics).' : 'Help us understand how our site is used (Google Analytics).'}
+              </p>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  localStorage.setItem('cookie-consent-given', 'true');
+                  localStorage.setItem('cookie-analytics-enabled', analyticsEnabled ? 'true' : 'false');
+                  setShowCookieModal(false);
+                  setShowCookieBanner(false);
+                }}
+                className="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-semibold rounded-lg transition"
+              >
+                {lang === 'sk' ? 'Uložiť' : lang === 'cs' ? 'Uložit' : 'Save'}
+              </button>
+              <button
+                onClick={() => setShowCookieModal(false)}
+                className="flex-1 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition"
+              >
+                {lang === 'sk' ? 'Zatvoriť' : lang === 'cs' ? 'Zavřít' : 'Close'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* HEADER SECTION */}
+
 
       {/* ── HERO SECTION ── */}
       <div className="relative overflow-hidden">
@@ -345,13 +598,21 @@ Respond ONLY with a valid JSON array of exactly 15 objects. No explanation.
         <div className="absolute inset-0 opacity-30" style={{backgroundImage:'radial-gradient(circle at 20% 50%, #7c3aed 0%, transparent 50%), radial-gradient(circle at 80% 20%, #3b82f6 0%, transparent 50%)'}} />
 
         <div className="relative max-w-5xl mx-auto px-4 pt-6 pb-4">
-          <div className="flex justify-end gap-2 mb-10">
-            {['sk','cs','en'].map(l=>(
-              <button key={l} onClick={()=>setLang(l)} className={`px-4 py-1.5 rounded-full text-sm font-semibold transition border ${lang===l?'bg-white text-violet-900 border-white':'bg-white/10 text-white border-white/20 hover:bg-white/20'}`}>
-                {l==='sk'?'🇸🇰 SK':l==='cs'?'🇨🇿 CS':'🇬🇧 EN'}
-              </button>
-            ))}
-          </div>
+<div className="flex items-center justify-between mb-10">
+  {/* Logo on LEFT */}
+  <a href="/" className="flex items-center gap-2 hover:opacity-80 transition">
+    <img className="rounded-sm" src="/logo.png" alt="GenerateFast" height="50" />
+  </a>
+  
+  {/* Language buttons on RIGHT */}
+  <div className="flex gap-2">
+    {['sk','cs','en'].map(l=>(
+      <button key={l} onClick={()=>handleLanguageChange(l)} className={`px-4 py-1.5 rounded-full text-sm font-semibold transition border ${lang===l?'bg-gradient-to-r from-violet-600 to-blue-600 text-white border-violet-500':'bg-white/10 text-white border-white/20 hover:bg-white/20'}`}>
+        {l==='sk'?'🇸🇰 SK':l==='cs'?'🇨🇿 CS':'🇬🇧 EN'}
+      </button>
+    ))}
+  </div>
+</div>
 
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-violet-500/20 border border-violet-400/30 rounded-full px-4 py-1.5 text-violet-300 text-sm font-medium mb-6">
@@ -372,6 +633,7 @@ Respond ONLY with a valid JSON array of exactly 15 objects. No explanation.
         </div>
       </div>
 
+{/* ── MAIN SECTION ── */}
       <div className="max-w-6xl mx-auto px-4 py-12 pb-16">
         {step==='form' && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -455,7 +717,12 @@ Respond ONLY with a valid JSON array of exactly 15 objects. No explanation.
                         {d.reason && (<p className="text-xs text-gray-400 italic mb-3">{t.aiReason}: {d.reason}</p>)}
                         <div className="flex items-center gap-2 mb-3"><span className="text-xs text-gray-500 whitespace-nowrap">{t.quality}:</span><div className="w-28 bg-gray-700 rounded-full h-1.5"><div className={`h-1.5 rounded-full transition-all ${d.score>=80?'bg-gradient-to-r from-green-500 to-emerald-400':d.score>=60?'bg-gradient-to-r from-yellow-500 to-amber-400':'bg-gradient-to-r from-red-500 to-rose-400'}`} style={{width:`${d.score}%`}}/></div><span className="text-xs font-bold text-gray-300">{d.score}/100</span></div>
                         <div className="flex flex-wrap items-center gap-1.5 text-xs mb-3"><span className="text-gray-500">{t.social}</span>{d.social.twitter && <span className="px-2 py-0.5 bg-sky-500/20 text-sky-400 rounded-full border border-sky-500/20">✓ Twitter</span>}{d.social.instagram && <span className="px-2 py-0.5 bg-pink-500/20 text-pink-400 rounded-full border border-pink-500/20">✓ Instagram</span>}{d.social.facebook && <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded-full border border-blue-500/20">✓ Facebook</span>}</div>
-                        {d.available==='available' && (<a href={`https://www.namecheap.com/domains/registration/results/?domain=${d.full}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs px-4 py-2 bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white rounded-xl transition font-medium shadow-lg shadow-violet-900/30"><ExternalLink size={12}/>{t.buy}</a>)}
+                        {d.available==='available' && (() => {
+                          const registrar = getRegistrarForDomain(d.full);
+                          return (
+                            <a href={registrar.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs px-4 py-2 bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white rounded-xl transition font-medium shadow-lg shadow-violet-900/30"><ExternalLink size={12}/>{t.buy}</a>
+                          );
+                        })()}
                       </div>
                       <div className="flex flex-col gap-2">
                         <button onClick={()=>toggleFav(d)} title={t.fav} className={`p-2.5 rounded-xl transition ${isFav(d)?'bg-yellow-500/20 text-yellow-400':'bg-gray-700 text-gray-500 hover:bg-gray-600 hover:text-gray-300'}`}><Star size={16} fill={isFav(d)?'currentColor':'none'}/></button>
@@ -476,6 +743,38 @@ Respond ONLY with a valid JSON array of exactly 15 objects. No explanation.
           </div>
         )}
       </div>
+
+{/* ── FOOTER ── */}
+      <footer className="mt-20 border-t border-gray-800">
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div>
+              <h3 className="text-white font-bold mb-3">GenerateFast</h3>
+              <p className="text-sm text-gray-400">{t.footerAboutDesc}</p>
+            </div>
+            <div>
+              <h3 className="text-white font-bold mb-3">{t.footerQuickLinks}</h3>
+              <ul className="space-y-1 text-sm">
+                <li><a href="/" className="text-gray-400 hover:text-white transition">{t.footerHome}</a></li>
+                <li><a href="/privacy.html" className="text-gray-400 hover:text-white transition">{t.footerPrivacy}</a></li>
+                <li><a href="/terms.html" className="text-gray-400 hover:text-white transition">{t.footerTerms}</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-white font-bold mb-3">{t.footerContact}</h3>
+              <ul className="space-y-1 text-sm">
+                <li><a href="mailto:contact@generatefast.com" className="text-gray-400 hover:text-white transition">{t.footerEmail}</a></li>
+                <li><a href="https://github.com" className="text-gray-400 hover:text-white transition">{t.footerGitHub}</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-700 pt-6 text-center text-sm text-gray-500">
+            <p>{t.footerCopyright}</p>
+            <p className="mt-2">{t.footerBuiltWith} | <a href="/privacy.html" className="text-gray-400 hover:text-white">{t.footerPrivacy}</a> • <a href="/terms.html" className="text-gray-400 hover:text-white">{t.footerTerms}</a></p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

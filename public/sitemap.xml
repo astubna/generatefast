@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- Homepage - EN (default) with language alternates -->
+  <url>
+    <loc>https://generatefast.com/</loc>
+    <lastmod>2026-03-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://generatefast.com/"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://generatefast.com/sk"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://generatefast.com/cs"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://generatefast.com/"/>
+  </url>
+
+  <!-- English version -->
+  <url>
+    <loc>https://generatefast.com/en</loc>
+    <lastmod>2026-03-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://generatefast.com/en"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://generatefast.com/sk"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://generatefast.com/cs"/>
+  </url>
+
+  <!-- Slovak version -->
+  <url>
+    <loc>https://generatefast.com/sk</loc>
+    <lastmod>2026-03-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://generatefast.com/en"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://generatefast.com/sk"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://generatefast.com/cs"/>
+  </url>
+
+  <!-- Czech version -->
+  <url>
+    <loc>https://generatefast.com/cs</loc>
+    <lastmod>2026-03-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://generatefast.com/en"/>
+    <xhtml:link rel="alternate" hreflang="sk" href="https://generatefast.com/sk"/>
+    <xhtml:link rel="alternate" hreflang="cs" href="https://generatefast.com/cs"/>
+  </url>
+
+  <!-- Privacy Policy -->
+  <url>
+    <loc>https://generatefast.com/privacy.html</loc>
+    <lastmod>2026-03-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Terms of Service -->
+  <url>
+    <loc>https://generatefast.com/terms.html</loc>
+    <lastmod>2026-03-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>
