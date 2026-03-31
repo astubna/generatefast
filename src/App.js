@@ -750,7 +750,10 @@ Respond ONLY with a valid JSON array of exactly 15 objects. No explanation.
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
               <h3 className="text-white font-bold mb-3">GenerateFast</h3>
-              <p className="text-sm text-gray-400">{t.footerAboutDesc}</p>
+              <p className="text-sm text-gray-400 mb-3">{t.footerAboutDesc}</p>
+              <a href="https://launchigniter.com/product/generatefast?ref=badge-generatefast" target="_blank">
+  <img src="https://launchigniter.com/api/badge/generatefast?theme=dark" alt="Featured on LaunchIgniter" width="212" height="55" />
+</a>
             </div>
             <div>
               <h3 className="text-white font-bold mb-3">{t.footerQuickLinks}</h3>
